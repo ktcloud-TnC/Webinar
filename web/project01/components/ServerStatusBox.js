@@ -9,7 +9,10 @@ function ServerStatusBox({ serverType }) {
     async function fetchServerStatus() {
       const response = await fetch(endpoint);
       const data = await response.json();
-      setServerStatus(data);
+      setServerStatus({
+        cpuUsage: parseFloat(data.cpuUsage).toFixed(2), // CPU 사용량 소수점 두 자리로 포매팅
+        memoryUsage: parseFloat(data.memoryUsage).toFixed(2) // 메모리 사용량 소수점 두 자리로 포매팅
+      });
     }
 
     fetchServerStatus();
@@ -18,8 +21,7 @@ function ServerStatusBox({ serverType }) {
     return () => clearInterval(interval);
   }, [serverType]);
 
-  // CPU 사용량에 따라 클래스 이름을 동적으로 결정
-  const cpuUsageClassName = `${styles.serverBoxP} ${serverStatus.cpuUsage === 100 ? styles.cpuUsageHigh : ''}`;
+  const cpuUsageClassName = `${styles.serverBoxP} ${serverStatus.cpuUsage >= 100 ? styles.cpuUsageHigh : ''}`;
 
   return (
     <>
