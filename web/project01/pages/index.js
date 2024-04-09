@@ -7,19 +7,30 @@ import ServerStatusChecker from '../components/ServerStatusChecker';
 import ProductList from '../components/ProductList';
 import ProductDescription from '../components/ProductDescription';
 import ServerStatusBox from '../components/ServerStatusBox';
-import { installStressTool, startWebStressTest } from '../components/stressActions';
+import { useStressTestActions } from '../components/stressActions';
 import Fetch_web_LogContent from '../components/Fetch_web_LogContent';
 import Fetch_was_LogContent from '../components/Fetch_was_LogContent';
 import Link from 'next/link';
 
 export default function Home() {
     const [selectedProductId, setSelectedProductId] = useState(null);
-
+    const { installStressTool, startWebStressTest, isLoading } = useStressTestActions();
+    const [selectedStep, setSelectedStep] = useState(null);
+    
     // 새 창을 여는 함수
     function openAddProductWindow() {
         const windowFeatures = "width=400,height=600,left=100,top=100";
         window.open('/addproduct', 'Add Product', windowFeatures);
     }
+    // 네비게이션 클릭 핸들러
+    function handleNavClick(step) {
+        setSelectedStep(step);
+        // 3초 후에 애니메이션 효과 제거
+        setTimeout(() => {
+            setSelectedStep(null);
+        }, 3000);
+    }
+    
     return (
         <div className={styles.container}>
             {/* Head 영역: 메타 데이터와 타이틀 설정 */}
@@ -52,24 +63,23 @@ export default function Home() {
                 {/* 네비게이션 바 추가 */}
                 <nav className={styles.navbar}>
                     <ul className={styles.navList}>
-                        <li className={styles.navItem}>
+                        <li className={styles.navItem} onClick={() => handleNavClick('step1')}>
                             <a href="#step1" className={styles.navLink}>Step 1</a>
                         </li>
                         <li className={styles.navDivider}>&gt;</li>
-                        <li className={styles.navItem}>
+                        <li className={styles.navItem} onClick={() => handleNavClick('step2')}>
                             <a href="#step2" className={styles.navLink}>Step 2</a>
                         </li>
                         <li className={styles.navDivider}>&gt;</li>
-                        <li className={styles.navItem}>
+                        <li className={styles.navItem} onClick={() => handleNavClick('step3')}>
                             <a href="#step3" className={styles.navLink}>Step 3</a>
                         </li>
                         <li className={styles.navDivider}>&gt;</li>
-                        <li className={styles.navItem}>
+                        <li className={styles.navItem} onClick={() => handleNavClick('step4')}>
                             <a href="#step4" className={styles.navLink}>Step 4</a>
                         </li>
                         <li className={styles.navDivider}>&gt;</li>
-                        <li className={styles.navItem}>
-                            {/* a 태그의 href 속성을 #step1으로 설정 */}
+                        <li className={styles.navItem} onClick={() => handleNavClick('step5')}>
                             <a href="#step5" className={styles.navLink}>Step 5</a>
                         </li>
                         
@@ -77,21 +87,22 @@ export default function Home() {
 
                     {/* 저작권 텍스트 추가 */}
                     <div className={styles.copyright}>
-                        이 자료의 저작권은 KT Cloud에 있으며, 무단 복제 및 배포를 금지합니다.
+                        이 자료의 저작권은 kt cloud에 있으며, 무단 복제 및 배포를 금지합니다.
                     </div>
                 </nav>
+                <nav id="step1"></nav>
                 {/* 서비스 상태 확인 섹션 */}
-                <div className={styles.info} id="step1">
-                    <p className={styles.step}>
+                <div className={styles.info}>
+                    <p className={`${styles.step} ${selectedStep === 'step1' ? styles.shineText : ''}`}>
                         <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step1</p>
                     <h1 className={styles.name}>
                         <span className={styles.mark}>kt cloud T&C</span>
                         &nbsp;3 Tier 웹 어플리케이션 구축 실습
                     </h1>
-                    <span>
+                    <span className={styles.explain}>
                         이 어플리케이션은 클라우드 서비스의 구축과 관리를 실습하고자 하는 사용자에게 이상적인 환경을 제공합니다.</span>
                     <br/>
-                    <span className={styles.textMargin}>
+                    <span className={`${styles.textMargin} ${styles.explain}`}>
                         사용자는 이를 통해 클라우드 기반의 웹 서비스 구축에 필요한 실질적인 경험을 쌓을 수 있습니다.
                     </span><br/>
 
@@ -107,8 +118,13 @@ export default function Home() {
                     <FetchHostname styles={styles}/> {/* // 페이지 컴포넌트 내부에서 ServerStatusChecker 컴포넌트 사용 */}
                     <ServerStatusChecker styles={styles}/>
                 </div>
-                <div className={styles.app_area} id="step2">
-                    <p className={styles.step_left}>
+
+                <nav id="step2"><br/>
+                <br/>
+                </nav>
+                
+                <div className={styles.app_area}>
+                    <p className={`${styles.step_left} ${selectedStep === 'step2' ? styles.shineText : ''}`}>
                         <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step2</p>
                     <h2 className={styles.app_name}>kt cloud service finder&nbsp;<span className={styles.right_logo}>app</span>
                     </h2>
@@ -151,9 +167,12 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
+                <nav id="step5"><br/>
+                <br/>    
+                </nav>
                 {/* 서비스 상태 확인 섹션 div 닫기 */}
-                <div className={styles.section} id="step5">
-                    <p className={styles.step_left}>
+                <div className={styles.section}>
+                    <p className={`${styles.step_left} ${selectedStep === 'step5' ? styles.shineText : ''}`}>
                         <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step5</p>
                     <p className={styles.serviceDescription}>
                             <span className={styles.serviceCheckMark}>&#10003;</span>
@@ -166,15 +185,13 @@ export default function Home() {
                         </small>
                     <div className={styles.serverStatusContainer}>
                         <div className={styles.serverBox}>
-                            <div className={styles.loader}> </div>
+                            {isLoading ? <div className={styles.loader}>Loading...</div> : null}
                             <h3 className={styles.serverBoxTitle}>WEB 서버 상태</h3>
                             <div className={styles.status_and_button}>
                                 <div className={styles.status}><ServerStatusBox serverType="WEB"/></div>
-                            <button className={styles.installStressTool} onClick={() => installStressTool()}>스트레스 툴 설치
-                            </button></div>
+                                <button className={styles.installStressTool} onClick={installStressTool}>스트레스 툴 설치</button></div>
                             <br/>
-                            <button className={styles.serverBoxButton} onClick={() => startWebStressTest()}>WEB 서버 과부하 테스트 시작
-                            </button>
+                            <button className={styles.serverBoxButton} onClick={startWebStressTest}>WEB 서버 과부하 테스트 시작</button>
                             
                         </div>
                         <div className={styles.serverBox}>
@@ -183,8 +200,11 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
-                <div className={styles.section} id="step4">
-                    <p className={styles.step_left}>
+                <nav id="step4"><br/>
+                <br/>
+                </nav>
+                <div className={styles.section}>
+                    <p className={`${styles.step_left} ${selectedStep === 'step4' ? styles.shineText : ''}`}>
                             <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step4</p>
                         <p className={styles.serviceDescription}>
                                 <span className={styles.serviceCheckMark}>&#10003;</span>
@@ -209,8 +229,11 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className={styles.section} id="step3">
-                    <p className={styles.step_left}>
+                <nav id="step3"><br/>
+                <br/>
+                </nav>
+                <div className={styles.section}>
+                    <p className={`${styles.step_left} ${selectedStep === 'step3' ? styles.shineText : ''}`}>
                             <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step3</p>
                         <p className={styles.serviceDescription}>
                                 <span className={styles.serviceCheckMark}>&#10003;</span>
@@ -231,7 +254,7 @@ export default function Home() {
                     </div>
                     <div className={styles.logdata}>
                     <Fetch_was_LogContent />
-                    </div>
+                    </div><br/>
                 </div>
             </div>
             {/* 오른쪽 영역 div 닫기 */}

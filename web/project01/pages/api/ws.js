@@ -1,43 +1,36 @@
 // pages/api/ws.js
-import { createServer } from 'http';
-import { Server } from 'ws';
+
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
+export const config = {
+    api: {
+        bodyParser: false,
+        externalResolver: true,
+    },
+};
+
+// 환경 변수에서 WAS 서버 IP 읽기
+const target = `http://${process.env.WAS_SERVER_IP}`;
+
+// 프록시 미들웨어 설정
+const proxy = createProxyMiddleware({
+    target: target,
+    changeOrigin: true,
+    ws: true, // 웹소켓 지원 활성화
+    logLevel: 'debug', // 로깅 레벨 설정 (필요에 따라 조절)
+    // 필요한 경우 여기에 추가 프록시 설정을 추가할 수 있습니다.
+});
+
 export default function handler(req, res) {
-    // 이 핸들러는 Next.js에서 API 라우트로 인식하지 않습니다.
-    if (!res.socket.server.ws) {
-        console.log('Initializing WebSocket');
-
-        // 웹소켓 서버 초기화
-        const httpServer = createServer();
-        const wsServer = new Server({ server: httpServer });
-        res.socket.server.ws = wsServer;
-
-        // 웹소켓 프록시 설정
-        const wsProxy = createProxyMiddleware({
-            target: process.env.WAS_SERVER_IP || 'http://172.25.1.177',
-            ws: true,
-            changeOrigin: true,
-            pathRewrite: {
-                '^/api/ws': '', // 엔드포인트 조정
-            },
-            router: {
-                // 특정 경로에 대한 요청을 다른 대상으로 라우팅
-                'localhost:3000/api/ws': 'http://172.25.1.177/api/ws',
-            },
+    // 프록시 요청 처리
+    if (req.method === 'GET') {
+        proxy(req, res, (result) => {
+            if (result instanceof Error) {
+                throw result;
+            }
+            throw new Error(`Request to ${req.url} was not proxied!`);
         });
-
-        // 웹소켓 연결 요청 처리
-        wsServer.on('connection', (socket, req) => {
-            console.log('WebSocket client connected');
-            socket.on('message', (message) => {
-                console.log(`Received message: ${message}`);
-            });
-        });
-
-        // HTTP 서버에 웹소켓 프록시 미들웨어 연결
-        httpServer.on('upgrade', wsProxy.upgrade);
+    } else {
+        res.status(405).json({ message: 'Method not allowed' });
     }
-
-    res.end();
 }

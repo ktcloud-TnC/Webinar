@@ -1,22 +1,26 @@
-// pages/api/nas-logs.js
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import moment from 'moment-timezone';
 
-const naslogDirectory = path.join(__dirname, '../../../n1/logs/all');
+const naslogDirectory = '/n1/logs/all'; // 예시: 절대 경로 직접 지정
 
-function getTodayLogPattern() {
-    const today = moment().tz('Asia/Seoul').format('YYYYMMDD');
-    return path.join(naslogDirectory, `all-access-${today}.log`);
+async function getTodayLogPattern() {
+  const today = moment().tz('Asia/Seoul').format('YYYYMMDD');
+  return path.join(naslogDirectory, `all-access-${today}.log`);
 }
 
-export default function handler(req, res) {
-    const logPath = getTodayLogPattern();
+export default async function handler(req, res) {
+  const logPath = await getTodayLogPattern();
 
-    if (fs.existsSync(logPath)) {
-        const logContent = fs.readFileSync(logPath, 'utf8');
-        res.status(200).send(logContent);
+  try {
+    const logContent = await fs.readFile(logPath, 'utf8');
+    res.status(200).send(logContent);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      res.status(404).json({ message: 'The log file for today does not exist.' });
     } else {
-        res.status(404).json({ message: 'The log file for today does not exist.' });
+      console.error('Error reading file:', error);
+      res.status(500).send('Failed to read log file.');
     }
+  }
 }

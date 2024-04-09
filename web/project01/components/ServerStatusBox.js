@@ -1,6 +1,5 @@
-// components/ServerStatusBox.js
 import React, { useEffect, useState } from 'react';
-import styles from '../styles/Layout.module.css'; // CSS 모듈 불러오기
+import styles from '../styles/Layout.module.css';
 
 function ServerStatusBox({ serverType }) {
   const [serverStatus, setServerStatus] = useState({ cpuUsage: 0, memoryUsage: 0 });
@@ -19,9 +18,12 @@ function ServerStatusBox({ serverType }) {
     return () => clearInterval(interval);
   }, [serverType]);
 
+  // CPU 사용량에 따라 클래스 이름을 동적으로 결정
+  const cpuUsageClassName = `${styles.serverBoxP} ${serverStatus.cpuUsage === 100 ? styles.cpuUsageHigh : ''}`;
+
   return (
     <>
-      <p className={styles.serverBoxP}>CPU 사용량: {serverStatus.cpuUsage}%</p>
+      <p className={cpuUsageClassName}>CPU 사용량: {serverStatus.cpuUsage}%</p>
       <p className={styles.serverBoxP}>메모리 사용량: {serverStatus.memoryUsage}%</p>
     </>
   );

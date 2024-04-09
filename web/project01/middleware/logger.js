@@ -32,8 +32,14 @@ morgan.token('date', () => {
 
 // morgan 로거 설정
 const logger = morgan(
-    ':date | :hostname | :remote-addr | :method :url HTTP/:http-version | :status | :response-time ms | :user-agent',
-    { stream: accessLogStream }
-  );
+  ':date | :hostname | :remote-addr | :method :url HTTP/:http-version | :status | :response-time ms | :user-agent',
+  {
+    stream: accessLogStream,
+    skip: function (req, res) {
+      // 루트 경로('/')에 대한 GET 요청만 로그를 남깁니다.
+      return !(req.method === 'GET' && req.url === '/');
+    }
+  }
+);
 
 module.exports = logger;

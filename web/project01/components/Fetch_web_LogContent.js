@@ -1,4 +1,3 @@
-// components/Fetch_web_LogContent.js
 import { useEffect, useState } from 'react';
 
 function Fetch_web_LogContent() {
@@ -16,17 +15,20 @@ function Fetch_web_LogContent() {
                 setLogContent(data);
             })
             .catch(error => {
+                let message = "서버가 정상적으로 작동하지 않아 로그 내용을 불러올 수 없습니다.";
                 if (error.message === "NAS에 정상적으로 연결되지 않아 로그 기록이 중단되었습니다.") {
-                    setLogContent(error.message);
-                } else {
-                    setLogContent("서버가 정상적으로 작동하지 않아 로그 내용을 불러올 수 없습니다.");
+                    message = error.message;
                 }
+                setLogContent(message);
             });
     }, []);
 
     return (
         <div>
-        {logContent}
+            {logContent.split('\n').map((line, index) => (
+                // 배열의 각 요소(텍스트 라인)를 div 또는 span으로 감싸고, key를 제공합니다.
+                <div key={index}>{line}</div>
+            ))}
         </div>
     );
 }
