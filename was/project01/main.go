@@ -47,9 +47,6 @@ func main() {
 	// static file service
 	e.Static("/", "static")
 
-	// Server status check endpoint
-	e.GET("/api/status", checkDBConnection)
-
 	// 상품 리스트 엔드포인트 등록
 	e.GET("/api/products/list", getProductList)
 
