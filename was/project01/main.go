@@ -125,9 +125,17 @@ func main() {
 			return err
 		}
 
+		// 호스트 이름을 가져옵니다.
+		hostname, err := os.Hostname()
+		if err != nil {
+			log.Printf("Error getting hostname: %v", err)
+			return err
+		}
+
 		status := ServerStatus{
 			CPUUsage:    cpuUsage,
 			MemoryUsage: memoryUsage,
+			Hostname:    hostname, // 호스트 이름을 상태에 추가합니다.
 		}
 		return c.JSON(http.StatusOK, status)
 	})
@@ -169,6 +177,7 @@ func ConnectDB() (*sql.DB, error) {
 
 // ServerStatus is a structure that represents the status of the server.
 type ServerStatus struct {
+	Hostname    string  `json:"hostname"` // 호스트 이름 필드 추가
 	CPUUsage    float64 `json:"cpuUsage"`
 	MemoryUsage float64 `json:"memoryUsage"`
 }
