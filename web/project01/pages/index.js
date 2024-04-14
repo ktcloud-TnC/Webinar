@@ -109,7 +109,7 @@ export default function Home() {
                     <small className={styles.stickyNote}>
                     <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step1&nbsp;:&nbsp;DMZ Tier에 구축한 WEB 서버를 통해 사용자 인터페이스(UI)를 제공하여 시스템에 접속하고 상호작용할 수 있습니다.<br/>
                     <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step2&nbsp;:&nbsp;Private Tier에 구축한 WAS 서버와 DBaaS for MySQL8 인스턴스를 통해 클라이언트 요청에 대한 데이터 처리와 계산이 이루어집니다.<br/>
-                    <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step3&nbsp;:&nbsp;WAS 서버에 추가 볼륨을 연결하고 LVM을 활용하여 디스크 공간을 유연하게 확장하여 어플리케이션 로그 파일의 저장 공간을 확보합니다.<br/>
+                    <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step3&nbsp;:&nbsp;WAS 서버에 추가 볼륨을 연결하고 디스크 공간을 유연하게 확장하여 어플리케이션 로그 파일의 저장 공간을 확보합니다.<br/>
                     <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step4&nbsp;:&nbsp;WEB 서버에 NAS 를 연결하고 로그 데이터 수집 도구를 활용하여 다수의 WEB 서버의 접속 로그를 NAS 에 통합하여 기록합니다.<br/>
                     <span className={styles.serviceCheckMark}>&#10003;</span>&nbsp;step5&nbsp;:&nbsp;Auto-Scaling 그룹을 설정하고 과부하 테스트 도구를 사용하여 설정한 트리거에 의해 WEB 서버의 Scale-Out이 작동되는 것을 확인합니다.<br/>
                     </small>
