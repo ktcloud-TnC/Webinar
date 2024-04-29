@@ -3,12 +3,13 @@ import { exec } from 'child_process';
 
 export default function handler(req, res) {
   // 환경 변수를 통해 WAS 서버 IP 주소를 가져옵니다.
-  const WAS_SERVER_IP = process.env.WAS_SERVER_IP || '172.25.1.177';
+  const WAS_SERVER_IP = process.env.WAS_SERVER_IP ;
+  const WAS_PRIVATE_IP = process.env.WAS_PRIVATE_IP || '172.25.1.177';
   const WAS_SERVER_URL = `http://${WAS_SERVER_IP}`;
   const ECHO_HEALTH_ENDPOINT = `${WAS_SERVER_URL}/healthCheck`;
   const DB_CHECK_ENDPOINT = `${WAS_SERVER_URL}/dbCheck`;
 
-  exec(`ping -c 1 ${WAS_SERVER_IP}`, async (err) => {
+  exec(`ping -c 1 ${WAS_PRIVATE_IP}`, async (err) => {
     if (err) {
       // ping 실패 시
       return res.status(500).json({ message: 'WAS 서버에 문제가 발생했습니다.' });
