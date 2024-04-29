@@ -33,7 +33,9 @@ function ServerStatusBox({ serverType }) {
     <>
       {/* WAS 서버인 경우 호스트 이름을 표시합니다. */}
       {serverType === 'WAS' && serverStatus.hostname && (
-        <p className={styles.serverBoxP}>HostName: {serverStatus.hostname}</p>
+        <p className={styles.serverBoxP}>
+          HostName: <span className={styles.hostnameHighlight}>{serverStatus.hostname}</span>
+        </p>
       )}
       <p className={cpuUsageClassName}>CPU 사용량: {serverStatus.cpuUsage}%</p>
       <p className={styles.serverBoxP}>메모리 사용량: {serverStatus.memoryUsage}%</p>
