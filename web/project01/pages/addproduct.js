@@ -1,3 +1,4 @@
+// pages\addproduct.js
 import Head from 'next/head';
 import React from 'react';
 import styles from '../styles/AddProduct.module.css';
@@ -8,7 +9,7 @@ export default function AddProduct() {
         const form = event.target;
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
-
+    
         try {
             const response = await fetch('/api/products/add', {
                 method: 'POST',
@@ -17,12 +18,14 @@ export default function AddProduct() {
                 },
                 body: JSON.stringify(data),
             });
-
+    
             if (response.ok) {
-                alert('Product added successfully!');
+                alert('상품이 성공적으로 추가되었습니다!');
                 form.reset();
+                window.opener.location.reload(); // 메인 페이지를 새로 고침
+                window.close(); // 현재 창을 닫음
             } else {
-                throw new Error('Failed to add product');
+                throw new Error('상품 추가에 실패했습니다');
             }
         } catch (error) {
             console.error(error);
