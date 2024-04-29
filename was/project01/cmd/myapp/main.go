@@ -39,5 +39,5 @@ func main() {
 	api.SetupRoutes(e)
 
 	// 서버 시작
-	e.Logger.Fatal(e.Start(":80"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
